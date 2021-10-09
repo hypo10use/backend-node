@@ -19,9 +19,14 @@ app.ws("/ws", (ws, req) => {
 
     console.log("new connection with address: " + address);
     ws.on("message", (msg) => {
-        switch (JSON.parse(msg.toString()).event) {
+        const parsedMsg = JSON.parse(msg.toString());
+        switch (parsedMsg.event) {
             case "bet":
-                console.log("new bet");
+                ws["participant"].placeBet(parsedMsg.amount);
+                break;
+            case "guess":
+                ws["participant"].doGuess(parsedMsg.amount);
+                break;
         }
     });
 

@@ -98,6 +98,7 @@ export class Game {
                 clearInterval(this.guessTimerInterval);
                 this.timerGuessStarted = false;
                 this.changeState("RESULT");
+                this.evaluateAndSendResults();
                 this.startResultTimer();
                 return;
             }
@@ -116,6 +117,7 @@ export class Game {
                 this.changeState("LOBBY");
                 this.participants = this.participants.concat(this.waitingList);
                 this.waitingList = [];
+                this.resetParticipantsBets();
                 if (this.participants.length >= 2) {
                     this.startLobbyTimer();
                 }
@@ -145,5 +147,56 @@ export class Game {
             "event": "tick",
             "timeRemaining": remainingTime,
         });
+    }
+
+    private resetParticipantsBets() {
+        this.participants.forEach((participant) => {
+            participant.reset();
+        });
+    }
+
+    private evaluateAndSendResults() {
+        const totalAmount = this.getTotalAmount();
+        const winners: Participant[] = [];
+        const losers: Participant[] = [];
+
+        new Promise((resolve) => {
+            this.participants.forEach((participant) => {
+                if (participant.hasPlacedBet() && participant.hasGuessed()) {
+                    if (participant.getGuess() === totalAmount) {
+                        winners.push(participant);
+                    } else {
+                        losers.push(participant);
+                    }
+                }
+            });
+            return resolve(null)
+        }).then(() => {
+            winners.forEach((winner) => {
+                winner.sendMessage({
+                    "event": "result",
+                    "result": "WINNER",
+                    "amount": totalAmount / winners.length,
+                });
+            });
+
+            losers.forEach((loser) => {
+                loser.sendMessage({
+                    "event": "result",
+                    "result": "LOSER",
+                    "amount": 0,
+                });
+            });
+        });
+    }
+
+    private getTotalAmount(): number {
+        let amount = 0;
+        this.participants.forEach((participant) => {
+            if (participant.hasPlacedBet()) {
+                amount += participant.getBet();
+            }
+        });
+        return amount;
     }
 }
