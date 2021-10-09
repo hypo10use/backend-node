@@ -6,7 +6,7 @@ import { Participant } from "./game/participant";
 const appBase = express();
 const webSocket = expressWs(appBase);
 const app = webSocket.app;
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.locals.game = new Game(webSocket.getWss());
 
