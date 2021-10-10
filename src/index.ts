@@ -16,6 +16,7 @@ app.get('/status', (req, res) => {
 
 app.ws("/ws", (ws, req) => {
     const address = req.query.address;
+    const name = req.query.name;
 
     console.log("new connection with address: " + address);
     ws.on("message", (msg) => {
@@ -35,7 +36,7 @@ app.ws("/ws", (ws, req) => {
         app.locals.game.leave(ws["participant"]);
     });
 
-    const participant = new Participant(app.locals.game, req.query.address, ws);
+    const participant = new Participant(app.locals.game, address, name, ws);
     // tslint:disable-next-line
     ws["participant"] = participant;
     app.locals.game.join(participant);

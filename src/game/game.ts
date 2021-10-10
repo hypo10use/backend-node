@@ -63,8 +63,10 @@ export class Game {
     public getParameters() {
         return {
             state: this.state,
-            participants: this.participants.length,
-            waitingList: this.waitingList.length,
+            participantsCount: this.participants.length,
+            participants: this.getParticipantNames(),
+            waitingListCount: this.waitingList.length,
+            waitingList: this.getWaitingListNames(),
             timerLobbyStarted: this.timerLobbyStarted,
             lobbyTimeRemaining: this.lobbyTimeRemaining,
             timerGuessStarted: this.timerGuessStarted,
@@ -72,6 +74,26 @@ export class Game {
             timerResultStarted: this.timerResultStarted,
             resultTimeRemaining: this.resultTimeRemaining,
         };
+    }
+
+    public getWaitingList() {
+        return this.waitingList;
+    }
+
+    private getParticipantNames(): string[] {
+        const names = [];
+        this.participants.forEach((participant) => {
+            names.push(participant.getName());
+        });
+        return names;
+    }
+
+    private getWaitingListNames(): string[] {
+        const names = [];
+        this.waitingList.forEach((participant) => {
+            names.push(participant.getName());
+        });
+        return names;
     }
 
     private startLobbyTimer() {

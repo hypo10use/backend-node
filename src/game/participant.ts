@@ -3,18 +3,24 @@ import { Game } from "./game";
 export class Participant {
     private game: Game;
     private id: string;
+    private name: string;
     private ws;
     private bet: number = 0;
     private guess: number = 0;
 
-    constructor(game: Game, id, ws) {
+    constructor(game: Game, id, name, ws) {
         this.game = game;
         this.id = id;
+        this.name = name;
         this.ws = ws;
     }
 
     public getId() {
         return this.id;
+    }
+
+    public getName() {
+        return this.name;
     }
 
     public sendMessage(msg) {
@@ -54,5 +60,25 @@ export class Participant {
     public reset() {
         this.bet = 0;
         this.guess = 0;
+    }
+
+    public isWaiting() {
+        let waiting = false;
+        this.game.getWaitingList().forEach((participant) => {
+            if (participant.getId() === this.id) {
+                waiting = true;
+            }
+        });
+        return waiting;
+    }
+
+    public getParameters() {
+        return {
+            name: this.name,
+            address: this.id,
+            bet: this.bet,
+            guess: this.guess,
+            waitingList: this.isWaiting(),
+        };
     }
 }
