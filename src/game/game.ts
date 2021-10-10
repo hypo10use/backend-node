@@ -60,8 +60,8 @@ export class Game {
         return this.lobbyTimeRemaining;
     }
 
-    public getParameters() {
-        return {
+    public getParameters(address?) {
+        const parameters = {
             state: this.state,
             participantsCount: this.participants.length,
             participants: this.getParticipantNames(),
@@ -74,10 +74,39 @@ export class Game {
             timerResultStarted: this.timerResultStarted,
             resultTimeRemaining: this.resultTimeRemaining,
         };
+
+        if (address) {
+            const participant = this.getParticipantByAddress(address);
+            if (participant) {
+                parameters["me"] = participant.getParameters();
+            }
+        }
+
+        return parameters;
     }
 
     public getWaitingList() {
         return this.waitingList;
+    }
+
+    private getParticipantByAddress(address): Participant {
+        let participantFound;
+
+        this.participants.forEach((participant) => {
+            if (participant.getId() === address) {
+                participantFound = participant;
+            }
+        });
+
+        if (!participantFound) {
+            this.waitingList.forEach((participant) => {
+                if (participant.getId() === address) {
+                    participantFound = participant;
+                }
+            });
+        }
+
+        return participantFound;
     }
 
     private getParticipantNames(): string[] {

@@ -14,6 +14,13 @@ app.get('/status', (req, res) => {
     res.json(app.locals.game.getParameters());
 });
 
+app.get('/status/:address', (req, res) => {
+    const address = req.params.address;
+
+    res.json(app.locals.game.getParameters(address));
+});
+
+
 app.ws("/ws", (ws, req) => {
     const address = req.query.address;
     const name = req.query.name;
