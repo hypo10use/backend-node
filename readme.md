@@ -1,5 +1,11 @@
 # backend
 
+```bash
+npm install
+npm build
+npm start
+```
+
 ## Outgoing events
 
 ### `tick`
