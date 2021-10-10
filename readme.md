@@ -1,5 +1,7 @@
 # backend
 
+API description can be found here: https://github.com/hypo10use/api/blob/master/hypo10use-morra.yaml
+
 ```bash
 npm install
 npm build
